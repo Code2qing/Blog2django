@@ -1,69 +1,154 @@
-{% extends 'blog/base.html' %}
-
-{% block main %}
-{% if error_msg %}
-<p>{{ error_msg }}</p>
-{% endif %}
-{% for post in post_list %}
-<article class="post post-{{ post.id }}">
-    <header class="entry-header">
-        <h1 class="entry-title">
-            <a href="{% url 'blog:detail' post.id %}">{{post.title}}</a>
-        </h1>
-        <div class="entry-meta">
-            <span class="post-category"><a href="#">{{ post.category.name }}</a></span>
-            <span class="post-date"><a href="#"><time class="entry-date"
-                                                      datetime="post.created_time">{{ post.created_time }}</time></a></span>
-            <span class="post-author"><a href="#">{{ post.author }}</a></span>
-            <span class="comments-link"><a href="#">{{post.comment_set.count}} 评论</a></span>
-            <span class="views-count"><a href="#">{{ post.views }} 阅读</a></span>
-        </div>
-    </header>
-    <div class="entry-content clearfix">
-        <p>{{post.excerpt|safe}}</p>
-        <div class="read-more cl-effect-14">
-            <a href="{% url 'blog:detail' post.id %}" class="more-link">继续阅读 <span class="meta-nav">→</span></a>
-        </div>
-    </div>
+{% extends 'blog/base1.html' %}
+{% load static %}
+{% block content %}
+<section id="posts" class="posts-expand">
+  {% for post in post_list %}
+<article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article" style="opacity: 1; display: block; transform: translateY(0px);">
+<link itemprop="mainEntityOfPage" href="http://notes.iissnan.com/2016/publishing-github-pages-with-travis-ci/">
+<span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+<meta itemprop="name" content="IIssNan">
+<meta itemprop="description" content="">
+<meta itemprop="image" content="/uploads/m3.jpg' %}>
+</span>
+<span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+<meta itemprop="name" content="Smile2u">
+</span>
+<header class="post-header">
+<h1 class="post-title" itemprop="name headline">
+<a class="post-title-link" href="{% url 'blog:detail' post.id %}" itemprop="url">
+          {{post.title}}
+</a>
+</h1>
+<div class="post-meta">
+  <span class="post-time">
+  <span class="post-meta-item-icon">
+  <i class="fa fa-calendar-o"></i>
+  </span>
+  <span class="post-meta-item-text">发表于</span>
+  <time title="创建于" itemprop="dateCreated datePublished" datetime="{{post.created_time}}">
+        {{ post.created_time }}
+  </time>
+  </span>
+  <span class="post-category">
+  <span class="post-meta-divider">|</span>
+  <span class="post-meta-item-icon">
+  <i class="fa fa-folder-o"></i>
+  </span>
+  <span class="post-meta-item-text">分类于</span>
+  <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+  <a href="#" itemprop="url" rel="index">
+  <span itemprop="name">{{ post.category.name }}</span>
+  </a>
+  </span>
+  </span>
+  <span class="post-comments-count">
+  <span class="post-meta-divider">|</span>
+  <span class="post-meta-item-icon">
+  <i class="fa fa-comment-o"></i>
+  </span>
+  <a href="https://notes.iissnan.com/2016/publishing-github-pages-with-travis-ci/#comments" itemprop="discussionUrl">
+  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/publishing-github-pages-with-travis-ci/" itemprop="commentCount">{{post.comment_set.count}} 评论</span>
+  </a>
+  </span>
+  <span>
+  <span class="post-meta-divider">|</span>
+  <span class="post-meta-item-icon">
+  <i class="fa fa-eye"> &nbsp;{{ post.views }}</i>
+  </span>
+  <span class="post-meta-item-text"> 阅读</span>
+  <span class="leancloud-visitors-count"></span>
+  </span>
+</div>
+</header>
+<div class="post-body" itemprop="articleBody">
+  <p>{{post.excerpt|safe }}</p>
+  <!--noindex-->
+  <div class="post-button text-center">
+    <a class="btn" href="{% url 'blog:detail' post.id %}" rel="contents">
+      阅读全文 »
+    </a>
+  </div>
+  <!--/noindex-->
+</div>
+<div>
+</div>
+<div>
+</div>
+<div>
+</div>
+<footer class="post-footer">
+<div class="post-eof">
+</div>
+</footer>
 </article>
-{% empty %}
-<div class="no-post">无文章</div>
 {% endfor %}
-<!--  简单分页效果 -->
-<!-- {% if is_paginated %}
-<div class="pagination-simple">
-    {% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}">上一页</a>
-    {% endif %}
-    <span class="current">第 {{ page_obj.number }} 页 / 共 {{ paginator.num_pages }} 页</span>
-    {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">下一页</a>
-    {% endif %}
+<article class="post post-type-picture" itemscope="" itemtype="http://schema.org/Article" style="opacity: 1; display: block; transform: translateY(0px);">
+<link itemprop="mainEntityOfPage" href="http://notes.iissnan.com/2015/group-picture-test/">
+<span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+<meta itemprop="name" content="IIssNan">
+<meta itemprop="description" content="">
+<meta itemprop="image" content={% static 'blog/pic/m3.jpg' %}>
+</span>
+<span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+<meta itemprop="name" content="Smile2u">
+</span>
+<div class="post-body" itemprop="articleBody">
+  <a href="https://notes.iissnan.com/2015/group-picture-test/">
+  <div class="group-picture">
+    <div class="group-picture-container">
+      <div class="group-picture-row">
+        <div class="group-picture-column" style="width: 100%;">
+          <img src={% static 'blog/pic/menu-restaurant-vintage-tab.jpg' %} alt="">
+        </div>
+      </div>
+      <div class="group-picture-row">
+        <div class="group-picture-column" style="width: 33.333333333333336%;">
+          <img src={% static 'blog/pic/esWWGbF.jpg' %} alt="">
+        </div>
+        <div class="group-picture-column" style="width: 33.333333333333336%;">
+          <img src={% static 'blog/pic/ZCogT10.jpg' %} alt="">
+        </div>
+        <div class="group-picture-column" style="width: 33.333333333333336%;">
+          <img src={% static 'blog/pic/24hrPQn.jpg' %} alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+  </a>
 </div>
-{% endif %} -->
+<div>
+</div>
+<div>
+</div>
+<div>
+</div>
+<footer class="post-footer">
+<div class="post-eof">
+</div>
+</footer>
+</article>
+</section>
 {% if is_paginated %}
-<div class="pagination">
-    <ul>
-        {% if first %}
-        <li><a href="">1</a></li>
-        {% endif %}
-        {% if left_has_more %}
-        <li><a href="">...</a></li>
-        {% endif %}
-        {% for i in left%}
-        <li><a href="?page={{i}}">{{i}}</a></li>
-        {% endfor %}
-        <li class="current"><a href="?page={{page_obj.number}}">{{page_obj.number}}</a></li>
-        {% for i in right %}
-        <li><a href="?page={{i}}">{{i}}</a></li>
-        {% endfor %}
-        {% if right_has_more %}
-        <li><a href="">...</a></li>
-        {% endif %}
-        {% if last %}
-        <li><a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
-        {% endif %}
-    </ul>
-</div>
+<nav class="pagination">
+{% if first %}
+<a href="?page=1" class="page-number">1</a>
 {% endif %}
-{% endblock main %}
+{% if left_has_more %}
+<span class="space">…</span>
+{% endif %}
+{% for i in left%}
+<a class="page-number" href="?page={{i}}">{{i}}</a>
+{% endfor %}
+<span class="page-number current">{{page_obj.number}}</span>
+{% for i in right %}
+<a class="page-number" href="?page={{i}}">{{i}}</a>
+{% endfor %}
+{% if right_has_more %}
+<span class="space">…</span>
+{% endif %}
+{% if last %}
+<a href="?page={{ paginator.num_pages }}" class="page-number">{{ paginator.num_pages }}</a>
+{% endif %}
+</nav>
+{% endif %}
+{% endblock content %}

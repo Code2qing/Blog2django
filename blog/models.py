@@ -24,13 +24,13 @@ class Post(models.Model):
 
 	body = models.TextField()
 
-	created_time=models.DateTimeField('创建时间')
-	modified_time=models.DateTimeField('修改时间')
+	created_time=models.DateTimeField('创建时间',auto_now_add=True)
+	modified_time=models.DateTimeField('修改时间',auto_now=True)
 
-	excerpt = models.CharField('摘要',max_length=200,blank=True)
-	category = models.ForeignKey(Category,on_delete=models.SET_DEFAULT,default=1,verbose_name='分类')
-	tags = models.ManyToManyField(Tag,blank=True,verbose_name='标签')
-	author = models.ForeignKey(User,on_delete=models.SET_DEFAULT,default="admin",verbose_name='作者')
+	excerpt = models.TextField('摘要',blank=True)
+	category = models.ForeignKey(Category,related_name='posts',on_delete=models.SET_DEFAULT,default=1,verbose_name='分类')
+	tags = models.ManyToManyField(Tag,blank=True,related_name='posts',verbose_name='标签')
+	author = models.ForeignKey(User,related_name='posts',on_delete=models.SET_DEFAULT,default="admin",verbose_name='作者')
 	views=models.PositiveIntegerField('阅读量',default=0)
 	def __str__(self):
 		return self.title
@@ -43,15 +43,22 @@ class Post(models.Model):
 		self.save(update_fields=['views'])
 
 	#复写save方法
-	def save(self,*args,**kwargs):
-		if not self.excerpt:
-			md = markdown.Markdown(extensions=[
-				'markdown.extensions.extra',
-				'markdown.extensions.codehilite',
-			])
+	# def save(self,*args,**kwargs):
+	# 	if not self.excerpt:
+	# 		md = markdown.Markdown(extensions=[
+	# 			'markdown.extensions.extra',
+	# 			'markdown.extensions.codehilite',
+	# 		])
 
-			self.excerpt = md.convert(self.body)[:104]+'...'
-		models.Model.save(self,*args,**kwargs)
+	# 		self.excerpt = md.convert(self.body)[:380]
+
+	# 	else:
+	# 		md = markdown.Markdown(extensions=[
+	# 			'markdown.extensions.extra',
+	# 			'markdown.extensions.codehilite',
+	# 		])
+	# 		self.excerpt = md.convert(self.excerpt)
+	# 	models.Model.save(self,*args,**kwargs)
 	class Meta:
 		ordering = ['-created_time']
 		verbose_name = '文章'

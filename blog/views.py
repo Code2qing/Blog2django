@@ -7,6 +7,10 @@ from django.views import generic
 from django.utils.text import slugify
 from markdown.extensions.toc import TocExtension
 from django.db.models import Q
+from rest_framework import viewsets,permissions,mixins
+from django.contrib.auth.models import User
+from .serializer import PostSerializer,TagSerializer,UserSerializer
+from .permission import IsAuthorOrReadOnly
 # Create your views here.
 # def index(request):
 # 	#return HttpResponse("欢迎访问我的博客！")
@@ -16,13 +20,36 @@ from django.db.models import Q
 # 		'post_list':post_list
 # 		})
 
+class PostViewSet(viewsets.ModelViewSet):
+	queryset = Post.objects.all()
+	serializer_class = PostSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,IsAuthorOrReadOnly)
+
+	def perform_create(self,serializer):
+		serializer.save(author=self.request.user)
+
+class TagViewSet(mixins.CreateModelMixin,
+				 mixins.ListModelMixin,
+				 mixins.RetrieveModelMixin,
+				 viewsets.GenericViewSet):
+	queryset = Tag.objects.all()
+	serializer_class = TagSerializer
+	premission_classes = (permissions.IsAuthenticatedOrReadOnly)
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+
 class IndexView(generic.ListView):
 	model = Post
+
 	template_name = 'blog/index.html'
 	#context_object_name = 'post_list'
-	paginate_by=5
+	paginate_by=4
 	def get_quertset(self):
 		return Post.objects.all()
+
+
 	
 	def get_context_data(self,**kwargs):
 		context = super().get_context_data(**kwargs)
@@ -30,11 +57,23 @@ class IndexView(generic.ListView):
 		paginator = context.get('paginator')
 		page = context.get('page_obj')
 		is_paginated = context.get('is_paginated')
+		queryset = context.get('object_list')
 
 		pagination_data = self.pagination_data(paginator,page,is_paginated)
 
 		context.update(pagination_data)
 
+		menu_home=True
+
+		context.update({'menu_home':menu_home})
+
+		for post in queryset:
+			md = markdown.Markdown(extensions=[
+				'markdown.extensions.extra',
+				'markdown.extensions.codehilite',
+			])
+			post.excerpt = md.convert(post.excerpt)
+		
 		return context
 
 	def pagination_data(self,paginator,page,is_paginated):
@@ -101,7 +140,7 @@ class IndexView(generic.ListView):
 # 	comment_list = post.comment_set.all()
 
 # 	return render(request,'blog/detail.html',context={'post':post,'form':form,'comment_list':comment_list})
-class DetailView(generic.DeleteView):
+class PostDetailView(generic.DetailView):
 	model=Post
 	template_name='blog/detail.html'
 	#得到Post实例复写get
@@ -126,7 +165,7 @@ class DetailView(generic.DeleteView):
 	def get_context_data(self,**kwargs):
 		context = super().get_context_data(**kwargs)
 		form = CommentForm()
-		comment_list = self.object.comment_set.all()
+		comment_list = self.object.comment_set.order_by('-created_time').all()
 		context.update({'form':form,'comment_list':comment_list})
 		return context
 
@@ -135,6 +174,10 @@ class DetailView(generic.DeleteView):
 # 									created_time__month=month
 # 									)
 # 	return render(request,'blog/index.html',context={'post_list':post_list})
+def archives_list(request):
+	menu_archive=True
+	return render(request,'blog/archives.html',{'menu_archive':menu_archive})
+
 class ArchivesView(generic.ListView):
 	model = Post
 	template_name = 'blog/index.html'
@@ -148,6 +191,12 @@ class ArchivesView(generic.ListView):
 # 	category_ob = get_object_or_404(Category,pk=category_id)
 # 	post_list = Post.objects.filter(category_id=category_id)
 # 	return render(request,'blog/index.html',context={'post_list':post_list})
+
+def category_list(request):
+	
+	return render(request,'blog/category.html',{})
+
+
 class CategoryView(generic.ListView):
 	#model = Post
 	template_name = 'blog/index.html'
@@ -158,6 +207,10 @@ class CategoryView(generic.ListView):
 		#return generic.ListView.get_queryset(self).filter(category=cate)
 		return Post.objects.all().filter(category=cate)
 
+def tags_list(request):
+	menu_tag=True
+	return render(request,'blog/tags.html',{'menu_tag':menu_tag})
+
 class TagView(generic.ListView):
 	template_name = 'blog/index.html'
 	context_object_name = 'post_list'
@@ -167,13 +220,13 @@ class TagView(generic.ListView):
 
 		return Post.objects.all().filter(tags=tag)
 
-def search(request):
-	q=request.GET.get('q')
-	error_msg = ''
+# def search(request):
+# 	q=request.GET.get('q')
+# 	error_msg = ''
 
-	if not q:
-		error_msg = "请输入关键词"
-		return render(request,'blog/index.html',{'error_msg':error_msg})
+# 	if not q:
+# 		error_msg = "请输入关键词"
+# 		return render(request,'blog/index.html',{'error_msg':error_msg})
 
-	post_list = Post.objects.filter(Q(title__icontains=q)|Q(body__icontains=q))
-	return render(request,'blog/index.html',{'error_msg':error_msg,'post_list':post_list})
+# 	post_list = Post.objects.filter(Q(title__icontains=q)|Q(body__icontains=q))
+# 	return render(request,'blog/index.html',{'error_msg':error_msg,'post_list':post_list})

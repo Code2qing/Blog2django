@@ -23,7 +23,7 @@ def post_comment(request,post_id):
 			return redirect(reverse('blog:detail',args=(post_id,)))
 
 		else:
-			comment_list =post.comment_set.all()
+			comment_list =post.comment_set.order_by('-created_time').all()
 			context={
 			'post':post,
 			'form':form,

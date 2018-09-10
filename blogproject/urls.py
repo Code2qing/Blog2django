@@ -18,8 +18,9 @@ from django.urls import path,include
 import xadmin
 
 urlpatterns = [
-   
+    path('xadmin/', xadmin.site.urls),
     path('admin/',admin.site.urls),
     path(r'',include("blog.urls")),
-    path(r'',include('comments.urls'))
+    path(r'',include('comments.urls')),
+    path(r'search',include('haystack.urls')),
 ]

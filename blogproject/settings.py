@@ -39,10 +39,21 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog.apps.BlogConfig',
     'comments',
-   
+    'haystack',
     'xadmin',
     'crispy_forms',
+    'rest_framework',
 ]
+
+HAYSTACK_CONNECTIONS={
+    'default':{
+        'ENGINE':'blog.whoosh_cn_backend.WhooshEngine',#指定haystack使用的搜索引擎
+        'PATH':os.path.join(BASE_DIR,'whoosh_index'), #指定索引文件位置
+    },
+}
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 1 #搜索结果每页*条
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'#实时更新索引
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -59,7 +70,7 @@ ROOT_URLCONF = 'blogproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
