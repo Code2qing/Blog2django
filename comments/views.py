@@ -20,7 +20,7 @@ def post_comment(request,post_id):
 			comment.post = post
 			comment.save()
 
-			return redirect(reverse('blog:detail',args=(post_id,)))
+			return redirect(reverse('blog:detail',args=(post_id,))+'#comments')
 
 		else:
 			comment_list =post.comment_set.order_by('-created_time').all()

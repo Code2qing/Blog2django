@@ -166,9 +166,36 @@ class PostDetailView(generic.DetailView):
 		context = super().get_context_data(**kwargs)
 		form = CommentForm()
 		comment_list = self.object.comment_set.order_by('-created_time').all()
-		context.update({'form':form,'comment_list':comment_list})
+		min_id=Post.objects.all().last().id
+		max_id=Post.objects.all().first().id
+
+		context.update({'form':form,'comment_list':comment_list,
+						'next_post':self.next_post(self.object.id,min_id),
+						'prev_post':self.prev_post(self.object.id,max_id)})
 		return context
 
+	def next_post(self,pk,min_id): #获取下一文章
+		#pk=self.kwargs.get('pk')
+		pk = pk - 1
+		if pk >= min_id:
+			if Post.objects.filter(id=pk).exists():
+				return Post.objects.get(id=pk)
+
+			else:
+				return self.next_post(pk,min_id)
+
+		else:
+			return False
+
+	def prev_post(self,pk,max_id):#获取上一文章
+		pk = pk + 1
+		if pk<=max_id:
+			if Post.objects.filter(id=pk).exists():
+				return Post.objects.get(id=pk)
+			else:
+				return self.prev_post(pk,max_id)
+		else:
+			return False
 # def archives(request,year,month):
 # 	post_list = Post.objects.filter(created_time__year=year,
 # 									created_time__month=month
@@ -186,6 +213,19 @@ class ArchivesView(generic.ListView):
 	def get_queryset(self):
 		return Post.objects.filter(created_time__year=self.kwargs.get('year'),
 									created_time__month=self.kwargs.get('month'))
+
+	def get_context_data(self,**kwargs):
+		context = super().get_context_data(**kwargs)
+		queryset = context.get('object_list')
+
+		for post in queryset:
+			md = markdown.Markdown(extensions=[
+				'markdown.extensions.extra',
+				'markdown.extensions.codehilite',
+			])
+			post.excerpt = md.convert(post.excerpt)
+		
+		return context
 
 # def category(request,category_id):
 # 	category_ob = get_object_or_404(Category,pk=category_id)
@@ -207,6 +247,19 @@ class CategoryView(generic.ListView):
 		#return generic.ListView.get_queryset(self).filter(category=cate)
 		return Post.objects.all().filter(category=cate)
 
+	def get_context_data(self,**kwargs):
+		context = super().get_context_data(**kwargs)
+		queryset = context.get('object_list')
+
+		for post in queryset:
+			md = markdown.Markdown(extensions=[
+				'markdown.extensions.extra',
+				'markdown.extensions.codehilite',
+			])
+			post.excerpt = md.convert(post.excerpt)
+		
+		return context
+
 def tags_list(request):
 	menu_tag=True
 	return render(request,'blog/tags.html',{'menu_tag':menu_tag})
@@ -220,6 +273,8 @@ class TagView(generic.ListView):
 
 		return Post.objects.all().filter(tags=tag)
 
+def search_page(request):
+	return render(request,'blog/search_page.html',)
 # def search(request):
 # 	q=request.GET.get('q')
 # 	error_msg = ''

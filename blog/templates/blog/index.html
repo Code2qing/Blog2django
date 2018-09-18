@@ -4,11 +4,11 @@
 <section id="posts" class="posts-expand">
   {% for post in post_list %}
 <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article" style="opacity: 1; display: block; transform: translateY(0px);">
-<link itemprop="mainEntityOfPage" href="http://notes.iissnan.com/2016/publishing-github-pages-with-travis-ci/">
+<link itemprop="mainEntityOfPage" href="{{ request.get_host }}{% url 'blog:detail' post.id %}">
 <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-<meta itemprop="name" content="IIssNan">
+<meta itemprop="name" content="code2qing">
 <meta itemprop="description" content="">
-<meta itemprop="image" content="/uploads/m3.jpg' %}>
+<meta itemprop="image" content={% static 'blog/pic/m3.jpg' %} %}>
 </span>
 <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
 <meta itemprop="name" content="Smile2u">
@@ -36,7 +36,7 @@
   </span>
   <span class="post-meta-item-text">分类于</span>
   <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-  <a href="#" itemprop="url" rel="index">
+  <a href="{% url "blog:category" post.category.id %}" itemprop="url" rel="index">
   <span itemprop="name">{{ post.category.name }}</span>
   </a>
   </span>
@@ -46,8 +46,8 @@
   <span class="post-meta-item-icon">
   <i class="fa fa-comment-o"></i>
   </span>
-  <a href="https://notes.iissnan.com/2016/publishing-github-pages-with-travis-ci/#comments" itemprop="discussionUrl">
-  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/publishing-github-pages-with-travis-ci/" itemprop="commentCount">{{post.comment_set.count}} 评论</span>
+  <a href="{% url 'blog:detail' post.id %}#comments" itemprop="discussionUrl">
+  <span class="post-comments-count disqus-comment-count"  itemprop="commentCount">{{post.comment_set.count}} 评论</span>
   </a>
   </span>
   <span>
@@ -83,9 +83,8 @@
 </article>
 {% endfor %}
 <article class="post post-type-picture" itemscope="" itemtype="http://schema.org/Article" style="opacity: 1; display: block; transform: translateY(0px);">
-<link itemprop="mainEntityOfPage" href="http://notes.iissnan.com/2015/group-picture-test/">
 <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-<meta itemprop="name" content="IIssNan">
+<meta itemprop="name" content="Code2qing">
 <meta itemprop="description" content="">
 <meta itemprop="image" content={% static 'blog/pic/m3.jpg' %}>
 </span>
@@ -93,7 +92,7 @@
 <meta itemprop="name" content="Smile2u">
 </span>
 <div class="post-body" itemprop="articleBody">
-  <a href="https://notes.iissnan.com/2015/group-picture-test/">
+  <a href="#">
   <div class="group-picture">
     <div class="group-picture-container">
       <div class="group-picture-row">

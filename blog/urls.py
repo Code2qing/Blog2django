@@ -20,6 +20,7 @@ urlpatterns=[
 	path(r'tags/',views.tags_list,name='tag_list'),
 	path(r'rss/',AllPostsRssFeed(),name='rss'),
 	#path(r'search/',views.search,name='search')
-	path(r'api/',include(router.urls)),
-	path('api/api-auth/',include('rest_framework.urls')),
+	path(r'',include(router.urls)),
+	path('api-auth/',include('rest_framework.urls')),
+	path('search_page/',views.search_page,name='search_page'),
 ]

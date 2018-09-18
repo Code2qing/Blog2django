@@ -1,6 +1,7 @@
 {% extends 'blog/base1.html' %}
 {% load static %}
 {% block content %}
+{% load blog_tags %}
 <div id="posts" class="posts-expand">
 	<article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article" style="opacity: 1; display: block; transform: translateY(0px);">
 	<link itemprop="mainEntityOfPage" href="{% url 'blog:detail' post.id %}">
@@ -43,8 +44,8 @@
 		<span class="post-meta-item-icon">
 		<i class="fa fa-comment-o"></i>
 		</span>
-		<a href="https://notes.iissnan.com/2016/publishing-github-pages-with-travis-ci/#comments" itemprop="discussionUrl">
-		<span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/publishing-github-pages-with-travis-ci/" itemprop="commentCount">{{ post.comment_set.count }} Comments</span>
+		<a href="{% url 'blog:detail' post.id %}#comments" itemprop="discussionUrl">
+		<span class="post-comments-count disqus-comment-count" data-disqus-identifier="{% url "blog:detail" post.id %}" itemprop="commentCount">{{ post.comment_set.count }} Comments</span>
 		</a>
 		</span>
 		<span id="/2016/publishing-github-pages-with-travis-ci/" class="leancloud_visitors" data-flag-title="使用 Travis CI 自动更新 GitHub Pages">
@@ -72,7 +73,7 @@
 			</li>
 			<li class="post-copyright-link">
 			<strong>本文链接：</strong>
-			<a href="{% url 'blog:detail' post.id %}" title="{{post.title}}">{% url 'blog:detail' post.id %}</a>
+			<a href="{{ request.get_host }}{% url 'blog:detail' post.id %}" title="{{post.title}}">{% url 'blog:detail' post.id %}</a>
 			</li>
 			<li class="post-copyright-license">
 			<strong>版权声明： </strong>
@@ -83,20 +84,30 @@
 	</div>
 	<footer class="post-footer">
 	<div class="post-tags">
-		<a href="https://notes.iissnan.com/tags/github/" rel="tag"># GitHub</a>
-		<a href="https://notes.iissnan.com/tags/next/" rel="tag"># NexT</a>
-		<a href="https://notes.iissnan.com/tags/travis-ci/" rel="tag"># Travis CI</a>
+		{% get_tags as tag_list %}
+		{% for tag in tag_list %}
+		<a href="{% url 'blog:tag' tag.id %}" rel="tag"># {{tag.name}}</a>
+		{% endfor%}
 	</div>
+	
 	<div class="post-nav">
 		<div class="post-nav-next post-nav-item">
-			<a href="https://notes.iissnan.com/2016/next-documentations-reload/" rel="next" title="NexT Documentations Reload">
-			<i class="fa fa-chevron-left"></i> NexT Documentations Reload
+			{% if next_post %}
+			<a href="{% url 'blog:detail' next_post.id %}" rel="next" title="{{ next_post.title }}">
+			<i class="fa fa-chevron-left"></i>{{ next_post.title }}
 			</a>
+			{% endif %}
 		</div>
 		<span class="post-nav-divider"></span>
 		<div class="post-nav-prev post-nav-item">
+			{% if prev_post %}
+			<a href="{% url 'blog:detail' prev_post.id %}" rel="prev" title="{{ prev_post.title }}">
+                {{ prev_post.title }} <i class="fa fa-chevron-right"></i>
+            </a>
+			{% endif %}
 		</div>
 	</div>
+	
 	</footer>
 	</article>
 	<div class="post-spread">
@@ -137,7 +148,7 @@
 </form>
 </div>
    <div class="comment-list-panel">
-	    <h3>评论列表，共 <span>{{ post.comment_set.count }}</span> 条评论</h3>
+	    <h3 id="comments">评论列表，共 <span>{{ post.comment_set.count }}</span> 条评论</h3>
 	    <ul class="comment-list list-unstyled">
 	        {% for comment in comment_list %}
 	        <li class="comment-item">
