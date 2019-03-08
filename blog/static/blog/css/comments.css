@@ -1,4 +1,3 @@
-
 .comment-list-panel {
     margin-top: 30px;
 }
@@ -24,7 +23,7 @@
 }
 
 .comment-item .nickname:after {
-    content: ' ·';
+    content: ' .';
 }
 
 .comment-item .text {
