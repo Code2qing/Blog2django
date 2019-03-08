@@ -3,6 +3,7 @@ from django import template
 from django.db.models.aggregates import Count
 import html
 from django.middleware.csrf import get_token
+from datetime import timezone, timedelta
 
 register=template.Library()
 
@@ -36,6 +37,7 @@ def get_tags():
 
 @register.simple_tag
 def show_children_comments(comment, request):
+	tzutc_8 = timezone(timedelta(hours=8))
 	csrf_token = get_token(request)
 	html_fill = """<div class="comment-children">
 					<ul class="comment-list list-unstyled">
@@ -100,6 +102,7 @@ def show_children_comments(comment, request):
 			return ''
 		for cmt in comment_.comment_set.all():
 			form_ = form_heml_fill.format(cmt.id, cmt.id, cmt.id, comment.post.id, csrf_token, cmt.id)
+			cmt.created_time = cmt.created_time.astimezone(tzutc_8).strftime("%Y年%m月%d日 %H:%M")
 			li_ += li_html_fill.format(cmt.nickname, cmt.created_time, html.escape(cmt.text), form_, join_html(cmt))
 		return html_fill.format(li_)
 
