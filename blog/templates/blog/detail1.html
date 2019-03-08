@@ -1,4 +1,5 @@
 {% extends "blog/base.html" %}
+{% block title%}{{ post.title }}{{% endblock %}}
 {% block main %}
 {% load blog_tags %}           
 <article class="post post-{{post.id}}">

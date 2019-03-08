@@ -3,6 +3,10 @@
     margin-top: 30px;
 }
 
+.comment-children {
+	padding-left: 1em;
+	border-left: 1px solid #ededed
+}
 .comment-list {
     margin-top: 15px;
 }

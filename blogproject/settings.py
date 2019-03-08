@@ -25,7 +25,7 @@ SECRET_KEY = '@4tgp9tx=%agsoho-_z449hlqr_qql%yne5yx6sf+5zem%k-f7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*',]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -40,19 +40,20 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'comments',
     'haystack',
-    'xadmin',
-    'crispy_forms',
+    # 'xadmin',
+    # 'crispy_forms',
     'rest_framework',
 ]
 
+
 HAYSTACK_CONNECTIONS={
     'default':{
-        'ENGINE':'blog.whoosh_cn_backend.WhooshEngine',#指定haystack使用的搜索引擎
-        'PATH':os.path.join(BASE_DIR,'whoosh_index'), #指定索引文件位置
+        'ENGINE':'blog.whoosh_cn_backend.WhooshEngine',  # 指定haystack使用的搜索引擎
+        'PATH':os.path.join(BASE_DIR,'whoosh_index'),  # 指定索引文件位置
     },
 }
-HAYSTACK_SEARCH_RESULTS_PER_PAGE = 1 #搜索结果每页*条
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'#实时更新索引
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 3  # 搜索结果每页*条
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'  # 实时更新索引
 
 
 MIDDLEWARE = [
@@ -91,8 +92,12 @@ WSGI_APPLICATION = 'blogproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'blog',
+        'USER': 'root',
+        'PASSWORD': '******',
+        'HOST': '127.0.0.1',
+        'OPTIONS': {'init_command': 'SET default_storage_engine=INNODB;'},
     }
 }
 

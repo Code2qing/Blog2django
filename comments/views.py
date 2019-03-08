@@ -16,11 +16,11 @@ def post_comment(request,post_id):
 		form = CommentForm(request.POST)
 
 		if form.is_valid():
-			comment = form.save(commit=False)#不将数据提交到数据库，仅生成模型实例
+			comment = form.save(commit=False)  # 不将数据提交到数据库，仅生成模型实例
 			comment.post = post
 			comment.save()
 
-			return redirect(reverse('blog:detail',args=(post_id,)))
+			return redirect(reverse('blog:detail',args=(post_id,))+'#comments')
 
 		else:
 			comment_list =post.comment_set.order_by('-created_time').all()
@@ -33,4 +33,4 @@ def post_comment(request,post_id):
 			return render(request,'blog/detail.html',context)
 
 	else:
-		return redirect(reverse('blog:detail',args=(post_id,)))
+		return redirect(reverse('blog:detail',args=(post_id,))+'#comments')
