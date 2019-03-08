@@ -14,6 +14,7 @@ from .permission import IsAuthorOrReadOnly
 from django.views.decorators.cache import cache_page  # 缓存装饰器
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.models import User
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -170,7 +171,10 @@ class PostDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         form = CommentForm()
-        comment_list = self.object.comment_set.filter(is_reply=False).order_by('-created_time')
+        if self.request.user.is_superuser:
+            comment_list = self.object.comment_set.filter(is_reply=False).order_by('-created_time')
+        else:
+            comment_list = self.object.comment_set.filter(is_reply=False, is_check=True).order_by('-created_time')
         min_id = Post.objects.all().last().id
         max_id = Post.objects.all().first().id
 

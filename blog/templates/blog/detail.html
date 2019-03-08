@@ -165,7 +165,10 @@
 	            <div class="text">
 	                {{comment.text}}
 	            </div>
-                <div id="comment-{{ comment.id }}" onclick="hold('comment-form-{{ comment.id }}')"><i class="fa fa-reply-all"></i>&nbsp; 回复</div>
+                <span id="comment-{{ comment.id }}" onclick="hold('comment-form-{{ comment.id }}')"><i class="fa fa-reply-all"></i>&nbsp; 回复</span>
+                {% if not comment.is_check %}
+                <span onclick="check({{ comment.id }})"><i class="fa fa-arrow-circle-o-right"></i> 通过</span>
+                {% endif %}
                 <div id="comment-form-{{ comment.id }}" style="display: none;">
                     <div class="bootstrap-frm">
 
@@ -223,6 +226,10 @@ function hold(id) {
         div.style = "display:none";
         temp=0;
     }
+}
+
+function check(comment_id) {
+    location.href = "/comment/check/" + comment_id
 }
 </script>
 {% endblock comments %}

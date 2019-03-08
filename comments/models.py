@@ -11,6 +11,7 @@ class Comment(models.Model):
 	post = models.ForeignKey('blog.Post', verbose_name='所属文章',on_delete=models.CASCADE)
 	is_reply = models.NullBooleanField("是否为回复", default=False)
 	reply = models.ForeignKey("self", verbose_name="所属评论或回复", on_delete=models.CASCADE, blank=True, null=True)
+	is_check = models.NullBooleanField("审核是否通过", default=False)
 
 	def __str__(self):
 		return self.text[:20]

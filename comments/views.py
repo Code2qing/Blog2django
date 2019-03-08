@@ -1,10 +1,10 @@
-from django.shortcuts import render,get_object_or_404,redirect
+from django.shortcuts import render,get_object_or_404,redirect,HttpResponse
 from blog.models import Post
-
 from .models import Comment
 from .forms import CommentForm
-
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required, permission_required
+import json
 
 
 # Create your views here.
@@ -34,3 +34,21 @@ def post_comment(request,post_id):
 
 	else:
 		return redirect(reverse('blog:detail',args=(post_id,))+'#comments')
+
+@login_required
+@permission_required('comments.change_comment')
+def check_comment(request, comment_id):
+	"""
+	审核评论
+	:param request:
+	:param comment_id:
+	:return:
+	"""
+	try:
+		comment = Comment.objects.get(id=comment_id)
+		comment.is_check = True
+		comment.save()
+		post_id = comment.post.id
+		return redirect(reverse('blog:detail',args=(post_id,))+'#comments')
+	except:
+		return HttpResponse(json.dumps({"status": "ERROR"}))
