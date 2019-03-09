@@ -6,6 +6,8 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 import json
 
+from comments.tasks import comment_notice
+
 
 # Create your views here.
 
@@ -19,6 +21,9 @@ def post_comment(request,post_id):
 			comment = form.save(commit=False)  # 不将数据提交到数据库，仅生成模型实例
 			comment.post = post
 			comment.save()
+
+			# 使用异步任务发送邮件
+			comment_notice.delay(comment.id)
 
 			return redirect(reverse('blog:detail',args=(post_id,))+'#comments')
 

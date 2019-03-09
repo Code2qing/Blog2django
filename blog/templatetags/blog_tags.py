@@ -69,7 +69,7 @@ def show_children_comments(comment, request):
 					<span>请填写全部信息</span>
 					</h1>
 					<input type='hidden' name='csrfmiddlewaretoken' value='{5}' />
-					<input type='hidden' name='is_reply' value=0 />
+					<input type='hidden' name='is_reply' value=2 />
 					<input type='hidden' name='reply' value={6} />
 					<label for="id_nickname"><span>*名字：</span></label>
 					<input type="text" name="nickname" maxlength="100" required id="id_nickname" />

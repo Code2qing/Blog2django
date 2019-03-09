@@ -95,7 +95,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'blog',
         'USER': 'root',
-        'PASSWORD': '******',
+        'PASSWORD': '********',
         'HOST': '127.0.0.1',
         'OPTIONS': {'init_command': 'SET default_storage_engine=INNODB;'},
     }
@@ -140,3 +140,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+broker_url = 'amqp://longer:*****@localhost'
+
+# 邮件配置
+EMAIL_HOST = "smtp.qq.com"
+EMAIL_HOST_USER = "qingjianlong@vip.qq.com"
+EMAIL_HOST_PASSWORD = "********"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+ADMIN_EMAIL = "qingjianlong@vip.qq.com"
