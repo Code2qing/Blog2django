@@ -5,11 +5,11 @@
 - 添加了RESTful API，API地址：https://smile2u.me/api
 - 适配了简洁的前端模板
 - 支持多级嵌套回复
-- 有新回复邮件通知被回复人
+- 支持评论审核
+- 有新回复邮件通知被回复人(Celery异步任务)
 
 ![多级回复](https://i.loli.net/2019/03/08/5c822db9ba4a9.jpg)
 
-- 支持评论审核
 
 ![评论审核](https://i.loli.net/2019/03/08/5c826649e4534.jpg)
 

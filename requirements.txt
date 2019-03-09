@@ -1,3 +1,4 @@
+celery
 Django==2.0.7
 django-crispy-forms==1.7.2
 django-formtools==2.1
