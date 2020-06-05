@@ -1,5 +1,5 @@
 celery
-Django==2.0.7
+Django==2.2.13
 django-crispy-forms==1.7.2
 django-formtools==2.1
 django-haystack==2.8.1
